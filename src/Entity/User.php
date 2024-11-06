@@ -35,7 +35,7 @@ use App\State\UserStateProcessor;
 )]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -98,5 +98,11 @@ class User
 
     public function getRoles(): array {
         return array($this->role->value);
+    }
+
+    public function eraseCredentials(): void {}
+
+    public function getUserIdentifier(): string {
+        return $this->name;
     }
 }
