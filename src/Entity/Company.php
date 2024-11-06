@@ -29,7 +29,9 @@ class Company
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(type: 'string', length: 100, unique: true)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 5, max: 100)]
     private ?string $name = null;
 
     public function getId(): ?int
