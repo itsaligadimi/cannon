@@ -52,6 +52,11 @@ class User implements UserInterface
     private ?Role $role = Role::ROLE_USER;   
 
     #[ORM\ManyToOne]
+    #[ORM\JoinColumn(referencedColumnName: "id", nullable: true, onDelete: "SET NULL")]
+    #[Expression(
+        expression: "value == null or this.getRole().value in ['ROLE_USER', 'ROLE_COMPANY_ADMIN']",
+        message: "Super Admin role can not have company"
+    )]
     private ?Company $company = null;
 
     public function getId(): ?int
