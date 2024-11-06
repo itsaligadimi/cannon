@@ -18,10 +18,9 @@ use App\State\UserStateProcessor;
 
 
 #[ApiResource(
-    security: "is_granted('ROLE_USER')",
+    security: "is_granted('IS_AUTHENTICATED_FULLY')",
     operations: [
         new GetCollection(
-            security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()",
             provider: UserStateProvider::class
         ),
         new Get(security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()"),
