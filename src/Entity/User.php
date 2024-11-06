@@ -3,18 +3,32 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Delete;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use App\State\UserStateProvider;
+use App\State\UserStateProcessor;
+
 
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     operations: [
-        new GetCollection(security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()"),
+        new GetCollection(
+            security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()",
+            provider: UserStateProvider::class
+        ),
         new Get(security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()"),
-        new Post(security: "is_granted('ROLE_COMPANY_ADMIN') or is_granted('ROLE_SUPER_ADMIN')"),
+        new Post(
+            security: "is_granted('ROLE_COMPANY_ADMIN') or is_granted('ROLE_SUPER_ADMIN')",
+            processor: UserStateProcessor::class
+        ),
         new Put(security: "is_granted('ROLE_SUPER_ADMIN') or (is_granted('ROLE_COMPANY_ADMIN') and object.getCompany() == user.getCompany())"),
         new Delete(security: "is_granted('ROLE_SUPER_ADMIN')")
     ]
