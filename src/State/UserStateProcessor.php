@@ -7,6 +7,8 @@ use ApiPlatform\State\ProcessorInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 use App\Entity\User;
 
 class UserStateProcessor implements ProcessorInterface
@@ -26,7 +28,13 @@ class UserStateProcessor implements ProcessorInterface
             $currentUser = $this->security->getUser();
 
             if ($this->security->isGranted('ROLE_COMPANY_ADMIN')) {
-                $data->setCompany($currentUser->getCompany());
+                if ($data->getCompany() === null) {
+                    $data->setCompany($currentUser->getCompany());
+                }
+            
+                if ($data->getCompany() !== $currentUser->getCompany()) {
+                    throw new AccessDeniedHttpException('You do not have permission to create a user for this company.');
+                }
             }
         }
 

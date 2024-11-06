@@ -28,7 +28,7 @@ class UserStateProvider implements ProviderInterface
             return $this->entityManager->getRepository(User::class)->findAll();
         }
 
-        if ($this->security->isGranted('ROLE_COMPANY_ADMIN')) {
+        if ($this->security->isGranted('ROLE_COMPANY_ADMIN') || $this->security->isGranted('ROLE_USER')) {
             $company = $user->getCompany();
 
             return $this->entityManager->getRepository(User::class)
