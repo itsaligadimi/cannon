@@ -10,6 +10,9 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Delete;
 use App\Repository\CompanyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 #[ApiResource(
     security: "is_granted('IS_AUTHENTICATED_FULLY')",
@@ -22,6 +25,7 @@ use Doctrine\ORM\Mapping as ORM;
     ]
 )]
 #[ORM\Entity(repositoryClass: CompanyRepository::class)]
+#[UniqueEntity(fields: 'name')]
 class Company
 {
     #[ORM\Id]
@@ -30,8 +34,8 @@ class Company
     private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 100, unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 5, max: 100)]
+    #[NotBlank]
+    #[Length(min: 5, max: 100)]
     private ?string $name = null;
 
     public function getId(): ?int
