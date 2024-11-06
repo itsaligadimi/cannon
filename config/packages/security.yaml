@@ -19,8 +19,11 @@ security:
 
 
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+            - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+            - { path: ^/api/users, roles: [ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
+            - { path: ^/api/companies, roles: [ROLE_USER, ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
+
 
 when@test:
     security:

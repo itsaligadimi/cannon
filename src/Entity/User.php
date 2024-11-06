@@ -12,8 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     security: "is_granted('ROLE_USER')",
     operations: [
-        new GetCollection(security: "is_granted('ROLE_SUPER_ADMIN') or is_granted('ROLE_COMPANY_ADMIN')"),
-        new Get(security: "is_granted('ROLE_SUPER_ADMIN') or (is_granted('ROLE_COMPANY_ADMIN') and object.getCompany() == user.getCompany()) or object == user"),
+        new GetCollection(security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()"),
+        new Get(security: "is_granted('ROLE_SUPER_ADMIN') or object.getCompany() == user.getCompany()"),
         new Post(security: "is_granted('ROLE_COMPANY_ADMIN') or is_granted('ROLE_SUPER_ADMIN')"),
         new Put(security: "is_granted('ROLE_SUPER_ADMIN') or (is_granted('ROLE_COMPANY_ADMIN') and object.getCompany() == user.getCompany())"),
         new Delete(security: "is_granted('ROLE_SUPER_ADMIN')")
