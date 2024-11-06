@@ -34,3 +34,7 @@ services:
             $security: '@security.helper'
             $entityManager: '@doctrine.orm.entity_manager'
         tags: [ 'api_platform.state_provider' ]
+    
+
+    App\Controller\TokenController:
+        tags: ['controller.service_arguments']

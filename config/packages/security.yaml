@@ -19,10 +19,10 @@ security:
 
 
     access_control:
-            - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+            - { path: ^/test/token, roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
-            - { path: ^/api/users, roles: [ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
-            - { path: ^/api/companies, roles: [ROLE_USER, ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
+            - { path: ^/api/users, roles: [IS_AUTHENTICATED_FULLY, ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
+            - { path: ^/api/companies, roles: [IS_AUTHENTICATED_FULLY, ROLE_USER, ROLE_COMPANY_ADMIN, ROLE_SUPER_ADMIN] }
 
 
 when@test:
