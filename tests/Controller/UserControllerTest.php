@@ -58,11 +58,7 @@ class UserControllerTest extends ApiTestCase
 
         $client = static::createClient();
         $client->request('POST', '/api/users', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
-            ],
+            'headers' => $this->makeHeader($token),
             'json' => [
                 'name' => 'New User',
                 'role' => 'ROLE_USER',
@@ -84,11 +80,7 @@ class UserControllerTest extends ApiTestCase
 
         $client = static::createClient();
         $client->request('POST', '/api/users', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
-            ],
+            'headers' => $this->makeHeader($token),
             'json' => [
                 'name' => 'User in Own Company',
                 'role' => 'ROLE_USER',
@@ -103,11 +95,7 @@ class UserControllerTest extends ApiTestCase
         $this->entityManager->flush();
 
         $client->request('POST', '/api/users', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $token,
-                'Content-Type' => 'application/ld+json',
-                'Accept' => 'application/ld+json',
-            ],
+            'headers' => $this->makeHeader($token),
             'json' => [
                 'name' => 'User in Different Company',
                 'role' => 'ROLE_USER',
@@ -116,5 +104,33 @@ class UserControllerTest extends ApiTestCase
         ]);
 
         $this->assertResponseStatusCodeSame(403);
+    }
+
+    public function testValidationFailsForInvalidNameLength(): void
+    {
+        $superAdmin = $this->entityManager->getRepository(User::class)
+            ->findOneBy(['name' => 'Super Admin']);
+
+        $token = $this->createJwtToken($superAdmin);
+
+        $client = static::createClient();
+
+        $client->request('POST', '/api/users', [
+            'headers' => $this->makeHeader($token),
+            'json' => [
+                'name' => 'Al',
+                'role' => 'ROLE_USER',
+            ],
+        ]);
+
+        $this->assertResponseStatusCodeSame(422);
+    }
+
+    private function makeHeader($token){
+        return [
+            'Authorization' => 'Bearer ' . $token,
+            'Content-Type' => 'application/ld+json',
+            'Accept' => 'application/ld+json',
+        ];
     }
 }
