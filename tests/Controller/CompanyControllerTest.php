@@ -21,32 +21,6 @@ class CompanyControllerTest extends ApiTestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        // Restart the database
-        self::bootKernel();
-        $application = new \Symfony\Bundle\FrameworkBundle\Console\Application(self::$kernel);
-        $application->setAutoExit(false);
-
-        $application->run(new \Symfony\Component\Console\Input\ArrayInput([
-            'command' => 'doctrine:database:drop',
-            '--force' => true,
-            '--if-exists' => true,
-            '--env' => 'test',
-        ]));
-
-        $application->run(new \Symfony\Component\Console\Input\ArrayInput([
-            'command' => 'doctrine:database:create',
-            '--env' => 'test',
-        ]));
-
-        $application->run(new \Symfony\Component\Console\Input\ArrayInput([
-            'command' => 'doctrine:migrations:migrate',
-            '--no-interaction' => true,
-            '--env' => 'test',
-        ]));
-
-
-        // Create initial data
         $this->entityManager = static::getContainer()->get(EntityManagerInterface::class);
         $this->tokenManager = static::getContainer()->get(JWTTokenManagerInterface::class);
 
@@ -62,6 +36,15 @@ class CompanyControllerTest extends ApiTestCase
         $this->entityManager->flush();
 
         $this->superAdminToken = $this->createJwtToken($superAdmin);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Company')->execute();
+
+        $this->entityManager->close();
+        parent::tearDown();
     }
 
     private function createJwtToken(UserInterface $user): string

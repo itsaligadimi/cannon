@@ -39,6 +39,15 @@ class UserControllerTest extends ApiTestCase
         $this->entityManager->flush();
     }
 
+    protected function tearDown(): void
+    {
+        $this->entityManager->createQuery('DELETE FROM App\Entity\User')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Company')->execute();
+
+        $this->entityManager->close();
+        parent::tearDown();
+    }
+
     private function createJwtToken(UserInterface $user): string
     {
         return $this->tokenManager->create($user);
